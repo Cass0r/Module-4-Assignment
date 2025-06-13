@@ -7,7 +7,7 @@
 
         <!-- SQLite JDBC connection string -->
         <property name="hibernate.connection.driver_class">org.sqlite.JDBC</property>
-        <property name="hibernate.connection.url">jdbc:sqlite:To_Do_ListDB.db</property>
+        <property name="hibernate.connection.url">jdbc:sqlite:C:/sqlite/Databases/To_Do_ListDB.db</property>
 
         <!-- Custom SQLite dialect -->
         <property name="hibernate.dialect">com.example.SQLiteDialect</property>
@@ -19,7 +19,6 @@
 
         <!-- Entity -->
         <mapping class="com.example.Items"/>
-
 
     </session-factory>
 </hibernate-configuration>

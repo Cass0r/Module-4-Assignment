@@ -1,9 +1,6 @@
 package com.example;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Column;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 @Entity
 @Table(name = "Items")
@@ -11,68 +8,57 @@ public class Items {
 
     @Id
     @Column(name = "ID")
-    private String ID;
+    private String id;
 
     @Column(name = "name", nullable = false)
-    private String name;
+    private String title;
 
     @Column(name = "short_description")
-    private String short_description;
+    private String description;
 
     @Column(name = "task_status", nullable = false)
-    private boolean task_status;
+    private int status;
 
-    // Constructors, getters, setters, toString...
+    // Constructors
+    public Items() {}
 
-    public Items() {} // Required by Hibernate
-
-    public Items(String ID, String name, String short_description, boolean task_status) {
-        this.ID = ID;
-        this.name = name;
-        this.short_description = short_description;
-        this.task_status = task_status;
-    }
-    //Getters
-    public String getID() {
-        return ID;
+    public Items(String id, String title, String description, int status) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.status = status;
     }
 
-    public String getName() {
-        return name;
+    // Getters and setters
+    public String getId() {
+        return id;
     }
 
-    public String getShort_description() {
-        return short_description;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public boolean isTask_status() {
-        return task_status;
+    public String getTitle() {
+        return title;
     }
 
-    //Setters
-    public void setID(String ID) {
-        this.ID = ID;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public String getDescription() {
+        return description;
     }
 
-    public void setShort_description(String short_description) {
-        this.short_description = short_description;
+    public void setDescription(String description) {
+        this.description = description;
     }
 
-    public void setTask_status(boolean task_status) {
-        this.task_status = task_status;
+    public int getStatus() {
+        return status;
     }
 
-    //Display Items Info
-    public String toString() {
-        return "\n=================Item Info=================" +
-                "\nItem ID: " + ID +
-                "\nItem Name: " + name +
-                "\nItem Description: " + short_description +
-                "\nTask Status: " + task_status +
-                "\n==========================================";
+    public void setStatus(int status) {
+        this.status = status;
     }
 }
