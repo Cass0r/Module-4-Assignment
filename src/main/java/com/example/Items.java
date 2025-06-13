@@ -1,25 +1,37 @@
 package com.example;
-import jakarta.persistence.Column;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.Column;
 import jakarta.persistence.Table;
 
-
+@Entity
+@Table(name = "Items")
 public class Items {
-    //These are the Variables used for the items information
+
+    @Id
+    @Column(name = "ID")
     private String ID;
+
+    @Column(name = "name", nullable = false)
     private String name;
+
+    @Column(name = "short_description")
     private String short_description;
+
+    @Column(name = "task_status", nullable = false)
     private boolean task_status;
 
-    //Constructor for how information will be inputted
-    public Items(String ID,String name, String short_description, boolean task_status){
+    // Constructors, getters, setters, toString...
+
+    public Items() {} // Required by Hibernate
+
+    public Items(String ID, String name, String short_description, boolean task_status) {
         this.ID = ID;
         this.name = name;
         this.short_description = short_description;
         this.task_status = task_status;
     }
-
     //Getters
     public String getID() {
         return ID;
