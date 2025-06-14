@@ -17,39 +17,61 @@ public to_do_item(){
 
 //----------------------------------------------------------------------------------------------------------------------
 // Method to add a to-do item to the list
-public boolean Add_Item(Items additem){
-    // Check if the item already exists by ID
-    if (item.containsKey(additem.getID())) {
-        System.out.println("Error: Movie already exists in the collection.");
-        return false; // item already exists
-    }
-    // Add the item to the map
-    item.put(additem.getID(), additem);
-    return true;
-}
-//----------------------------------------------------------------------------------------------------------------------
-//* Delete a to-do item
-public boolean Delete_item(String ID){
-    // Attempt to remove the item; if null, item was not found
-    if (item.remove(ID) == null) {
-        System.out.println("Error: Item not found.");
+public boolean Add_Item(Items additem) {
+    try (var session = HibernateUtil.getSessionFactory().openSession()) {
+        session.beginTransaction();
+        session.save(additem);
+        session.getTransaction().commit();
+        System.out.println("Item saved to database.");
+        return true;
+    } catch (Exception e) {
+        System.out.println("Error saving item: " + e.getMessage());
         return false;
     }
-    System.out.println("\nItem has been found and removed from list.");
-    return true;
 }
+
+
 //----------------------------------------------------------------------------------------------------------------------
-//* View the to-do items
-public void display_items_list(){
-    if(item.isEmpty()){
-        System.out.println("\nNo items in the to-do list.");
-    }else{
-        // Print each item's details using its toString() method
-        for(Items items : item.values()){
-            System.out.println(items);
+//* Delete a to-do item
+public boolean Delete_item(String ID) {
+    try (var session = HibernateUtil.getSessionFactory().openSession()) {
+        session.beginTransaction();
+        Items itemToDelete = session.get(Items.class, ID);
+        if (itemToDelete != null) {
+            session.delete(itemToDelete);
+            session.getTransaction().commit();
+            System.out.println("Item deleted from database.");
+            return true;
+        } else {
+            System.out.println("Item not found in database.");
+            return false;
         }
+    } catch (Exception e) {
+        System.out.println("Error deleting item: " + e.getMessage());
+        return false;
     }
 }
+
+//----------------------------------------------------------------------------------------------------------------------
+//* View the to-do items
+public void display_items_list() {
+    try (var session = HibernateUtil.getSessionFactory().openSession()) {
+        var itemList = session.createQuery("FROM Items", Items.class).list();
+        if (itemList.isEmpty()) {
+            System.out.println("No items found in the database.");
+        } else {
+            for (Items item : itemList) {
+                System.out.println("ID: " + item.getId() +
+                        ", Name: " + item.getName() +
+                        ", Description: " + item.getShortDescription() +
+                        ", Status: " + item.getTaskStatus());
+            }
+        }
+    } catch (Exception e) {
+        System.out.println("Error fetching items: " + e.getMessage());
+    }
+}
+
 //----------------------------------------------------------------------------------------------------------------------
 // Method to display and manage the to-do list menu
 public void To_Do_List_Menu(){
@@ -122,23 +144,22 @@ do {
             }
 
             // Prompt and validate task status (boolean)
-            boolean task_status;
+            int task_status;
             while (true) {
-                System.out.print("Enter the completion status of the task(true,false): ");
-                String input = sc.next().trim().toLowerCase();
-                //sc.nextLine();
+                System.out.print("Enter the completion status of the task (1 for completed, 0 for not completed): ");
+                String input = sc.next().trim();
 
-                if (input.equals("true")) {
-                    task_status = true;
-                    break;  // Exit the loop once a valid boolean is entered
-                } else if (input.equals("false")) {
-                    task_status = false;
-                    break;  // Exit the loop once a valid boolean is entered
+                if (input.equals("1")) {
+                    task_status = 1;
+                    break;
+                } else if (input.equals("0")) {
+                    task_status = 0;
+                    break;
                 } else {
-                    System.out.println("Error: Please enter 'true' or 'false'.");
+                    System.out.println("Error: Please enter '1' for completed or '0' for not completed.");
                 }
-
             }
+
             // Add the validated item
             System.out.println("\nItem has been added.");
             Add_Item(new Items(id, name, description, task_status));
